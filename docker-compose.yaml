@@ -2,7 +2,9 @@ version: "3"
 services:
   app:
     container_name: go_app
-    build: .
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - 8080:8080
     restart: on-failure
@@ -39,8 +41,6 @@ services:
       - /app/node_modules
     depends_on:
       - app
-    networks:
-      - backend
 
 volumes:
   api:
