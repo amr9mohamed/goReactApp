@@ -9,8 +9,8 @@ WORKDIR /app
 # Copy package.json and yarn.lock files 
 COPY package.json yarn.lock ./
 
-RUN ["yarn", "inistall"]
+RUN yarn
 
 COPY . .
-CMD [ "yarn", "build" ]
+CMD [ "yarn", "start" ]
 
