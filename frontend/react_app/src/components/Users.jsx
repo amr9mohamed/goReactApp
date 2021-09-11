@@ -1,17 +1,43 @@
 import React from "react";
+import { DataGrid } from "@material-ui/data-grid";
 
-export const Users = ({ users, loading }) => {
+const columns = [
+  { field: "id", headerName: "ID", width: 120 },
+  {
+    field: "email",
+    headerName: "Email",
+    width: 200,
+  },
+  {
+    field: "country",
+    headerName: "Country",
+    width: 200,
+  },
+  {
+    field: "phoneNumber",
+    headerName: "Phone Number",
+    width: 200,
+  },
+  {
+    field: "parcelWeight",
+    headerName: "Parcel Weight",
+    width: 175,
+  },
+];
+
+export const Users = ({ users, loading, usersPerPage }) => {
   if (loading) {
     return <h2>Loading...</h2>;
   }
 
   return (
-    <ul className="list-group mb-4">
-      {users.map((user) => (
-        <li key={user.id} className="list-group-item">
-          {user.title}
-        </li>
-      ))}
-    </ul>
+    <div style={{ height: 650, width: "100%" }}>
+      <DataGrid
+        rows={users}
+        columns={columns}
+        pageSize={usersPerPage}
+        disableSelectionOnClick
+      />
+    </div>
   );
 };
