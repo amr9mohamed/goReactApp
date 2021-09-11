@@ -26,6 +26,22 @@ services:
       - database_postgres:/var/lib/postgresql/data
     networks:
       - backend
+  client:
+    container_name: react_app
+    build:
+      context: ./frontend/react_app
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    restart: on-failure
+    volumes:
+      - ./frontend/react_app/src:/app/src
+      - /app/node_modules
+    depends_on:
+      - app
+    networks:
+      - backend
+
 volumes:
   api:
   database_postgres:
