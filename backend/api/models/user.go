@@ -43,8 +43,8 @@ func (u *User) GetDistinctCountries(db *gorm.DB) (*[]string, error) {
 }
 
 type countryFrequency struct {
-	Country   string
-	Frequency int64
+	Country   string `json:"country"`
+	Frequency int64  `json:"frequency"`
 }
 
 func (u *User) GetCountyFrequency(db *gorm.DB) (*[]countryFrequency, error) {
