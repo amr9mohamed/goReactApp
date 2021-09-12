@@ -25,11 +25,7 @@ const columns = [
   },
 ];
 
-export const Users = ({ users, loading, usersPerPage }) => {
-  if (loading) {
-    return <h2>Loading...</h2>;
-  }
-
+export const Users = ({ users, usersPerPage }) => {
   return (
     <div style={{ height: 650, width: "100%" }}>
       <DataGrid

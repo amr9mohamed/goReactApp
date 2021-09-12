@@ -23,30 +23,41 @@ function App() {
   const [usersPerPage] = useState(10);
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
-  const [states, setStates] = useState([]);
+  const [stats, setStats] = useState([]);
 
   useEffect(() => {
     const fetchCountries = async () => {
-      setloading(true);
       const res = await axios.get("http://localhost:8080/users/countries");
       setCountries(res.data);
-      setloading(false);
     };
     fetchCountries();
   }, []);
 
   const handleChange = (event) => {
-    setSelectedCountry(event.target.value);
+    let targetCountry = event.target.value;
+    setSelectedCountry(targetCountry);
+    if (targetCountry) {
+      setloading(true);
+      axios
+        .get(`http://localhost:8080/users/${targetCountry}/`)
+        .then((res) => {
+          setUsers(res.data);
+        })
+        .catch((err) => console.log(err))
+        .finally(() => {
+          setloading(false);
+        });
+    }
   };
 
-  const handleGetStates = () => {
+  const handleGetStats = () => {
     axios
       .get("http://localhost:8080/users/frequency")
       .then((res) => {
         res.data = res.data.map((el, idx) => {
           return { ...el, id: idx };
         });
-        setStates(res.data);
+        setStats(res.data);
       })
       .catch((err) => console.log(err));
   };
@@ -75,15 +86,15 @@ function App() {
       </FormControl>
       <br />
       {users.length ? (
-        <Users users={users} loading={loading} usersPerPage={usersPerPage} />
-      ) : null}
+        <Users users={users} usersPerPage={usersPerPage} />
+      ) : (
+        [loading ? <h2>Loading...</h2> : null]
+      )}
       <br />
-      <Button variant="contained" color="primary" onClick={handleGetStates}>
+      <Button variant="contained" color="primary" onClick={handleGetStats}>
         Show Stats
       </Button>
-      {states.length ? (
-        <CountryFrequency states={states} loading={loading} />
-      ) : null}
+      {stats.length ? <CountryFrequency stats={stats} /> : null}
     </div>
   );
 }

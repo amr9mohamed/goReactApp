@@ -14,15 +14,11 @@ const columns = [
   },
 ];
 
-export const CountryFrequency = ({ states, loading }) => {
-  if (loading) {
-    return <h2>Loading...</h2>;
-  }
-
+export const CountryFrequency = ({ stats }) => {
   return (
-    <div style={{ height: 350, width: "40%" }}>
+    <div style={{ height: 370, width: "40%" }}>
       <DataGrid
-        rows={states}
+        rows={stats}
         columns={columns}
         pageSize={5}
         disableSelectionOnClick
