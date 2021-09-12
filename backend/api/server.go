@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/amr9mohamed/mainApp/api/controllers"
-	"github.com/amr9mohamed/mainApp/api/seed"
 	"github.com/joho/godotenv"
 )
 
@@ -19,7 +18,8 @@ func Run() {
 
 	server.Initialize(os.Getenv("DB_DRIVER"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_PORT"), os.Getenv("DB_HOST"), os.Getenv("DB_NAME"))
 
-	seed.Load(server.DB)
+	// uncomment next line to seed the database if empty
+	// seed.Load(server.DB)
 
 	server.Run(":8080")
 }
