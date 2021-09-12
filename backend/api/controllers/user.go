@@ -15,3 +15,12 @@ func (s *Server) getUsers(rw http.ResponseWriter, r *http.Request) {
 	}
 	responses.JSON(rw, http.StatusOK, users)
 }
+
+func (s *Server) getDistinctCountries(rw http.ResponseWriter, r *http.Request) {
+	user := models.User{}
+	distinctCountries, err := user.GetDistinctCountries(s.DB)
+	if err != nil {
+		responses.ERROR(rw, http.StatusInternalServerError, err)
+	}
+	responses.JSON(rw, http.StatusOK, distinctCountries)
+}
