@@ -24,3 +24,12 @@ func (s *Server) getDistinctCountries(rw http.ResponseWriter, r *http.Request) {
 	}
 	responses.JSON(rw, http.StatusOK, distinctCountries)
 }
+
+func (s *Server) GetCountyFrequency(rw http.ResponseWriter, r *http.Request) {
+	user := models.User{}
+	countryFrequency, err := user.GetCountyFrequency(s.DB)
+	if err != nil {
+		responses.ERROR(rw, http.StatusInternalServerError, err)
+	}
+	responses.JSON(rw, http.StatusOK, countryFrequency)
+}
