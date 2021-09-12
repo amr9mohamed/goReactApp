@@ -33,6 +33,15 @@ func (u *User) GetUsers(db *gorm.DB) (*[]User, error) {
 	return &users, err
 }
 
+func (u *User) GetUsersByCountry(db *gorm.DB, country string) (*[]User, error) {
+	users := []User{}
+	err := db.Debug().Where("country = ?", country).Find(&users).Error
+	if err != nil {
+		return &[]User{}, err
+	}
+	return &users, err
+}
+
 func (u *User) GetDistinctCountries(db *gorm.DB) (*[]string, error) {
 	var countries []string
 	err := db.Debug().Order("country").Model(&User{}).Distinct().Pluck("country", &countries).Error
