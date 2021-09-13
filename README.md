@@ -22,7 +22,7 @@ Wait for it to finish before you can start.
 Verify everything is working by navigating to your browser and vist 
 
 ```sh
-127.0.0.1:3000
+localhost:3000
 ```
 
 ## License
