@@ -50,7 +50,6 @@ export const Users = ({
   users,
   page,
   numberOfUsers,
-  usersPerPage,
   handlePageChange,
   handleChangeRowsPerPage,
 }) => {
@@ -96,7 +95,6 @@ export const Users = ({
         component="div"
         rowsPerPage={users.length}
         count={numberOfUsers}
-        usersPerPage={usersPerPage}
         page={page}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleChangeRowsPerPage}

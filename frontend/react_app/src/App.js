@@ -131,13 +131,12 @@ function App() {
           users={users}
           page={currentPage - 1}
           numberOfUsers={numberOfUsers}
-          usersPerPage={usersPerPage}
           handlePageChange={handlePageChange}
           handleChangeRowsPerPage={handleChangeRowsPerPage}
         />
-      ) : (
-        [loading ? <h2>Loading...</h2> : null]
-      )}
+      ) : loading ? (
+        <h2>Loading...</h2>
+      ) : null}
       <br />
       <Button
         variant="contained"

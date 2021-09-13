@@ -20,8 +20,9 @@ export const CountryFrequency = ({ stats }) => {
       <DataGrid
         rows={stats}
         columns={columns}
-        pageSize={5}
+        pageSize={stats.length}
         disableSelectionOnClick
+        rowsPerPageOptions={[5]}
       />
     </div>
   );
