@@ -13,7 +13,7 @@ goReactApp uses:
 ## Installation
 goReactApp requires [Docker](https://www.docker.com/) and [Docker compose](https://docs.docker.com/compose/install/) to run.
 
-Clone the repo and then. 
+Clone the repo and then open a terminal in the location of the cloned repo and run the next command
 ```sh
 docker-compose up -d --build
 ```
