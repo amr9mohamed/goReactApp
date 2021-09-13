@@ -20,10 +20,13 @@ function App() {
   const classes = useStyles();
   const [users, setUsers] = useState([]);
   const [loading, setloading] = useState(false);
-  const [usersPerPage] = useState(10);
+  const [usersPerPage, SetUsersPerPage] = useState(10);
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [stats, setStats] = useState([]);
+  const [numberOfUsers, setNumberOfUsers] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showStatsFlag, setShowStatsFlag] = useState(false);
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -33,13 +36,30 @@ function App() {
     fetchCountries();
   }, []);
 
+  useEffect(() => {
+    const fetchFrequencies = async () => {
+      const res = await axios.get("http://localhost:8080/users/frequency");
+      res.data = res.data.map((el, idx) => {
+        return { ...el, id: idx };
+      });
+      setStats(res.data);
+    };
+    fetchFrequencies();
+  }, []);
+
   const handleChange = (event) => {
     let targetCountry = event.target.value;
-    setSelectedCountry(targetCountry);
     if (targetCountry) {
+      setSelectedCountry(targetCountry);
+      setCurrentPage(1);
       setloading(true);
+      setNumberOfUsers(
+        stats.find((el) => el.country === targetCountry).frequency
+      );
       axios
-        .get(`http://localhost:8080/users/${targetCountry}/`)
+        .get(
+          `http://localhost:8080/users/${targetCountry}/${currentPage}/${usersPerPage}/`
+        )
         .then((res) => {
           setUsers(res.data);
         })
@@ -50,16 +70,37 @@ function App() {
     }
   };
 
-  const handleGetStats = () => {
+  const handlePageChange = (event, newPage) => {
+    setCurrentPage(newPage + 1);
     axios
-      .get("http://localhost:8080/users/frequency")
+      .get(
+        `http://localhost:8080/users/${selectedCountry}/${
+          newPage + 1
+        }/${usersPerPage}/`
+      )
       .then((res) => {
-        res.data = res.data.map((el, idx) => {
-          return { ...el, id: idx };
-        });
-        setStats(res.data);
+        setUsers(res.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => {
+        setloading(false);
+      });
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    SetUsersPerPage(+event.target.value);
+    axios
+      .get(
+        `http://localhost:8080/users/${selectedCountry}/${currentPage}/${+event
+          .target.value}/`
+      )
+      .then((res) => {
+        setUsers(res.data);
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        setloading(false);
+      });
   };
 
   return (
@@ -86,15 +127,26 @@ function App() {
       </FormControl>
       <br />
       {users.length ? (
-        <Users users={users} usersPerPage={usersPerPage} />
+        <Users
+          users={users}
+          page={currentPage - 1}
+          numberOfUsers={numberOfUsers}
+          usersPerPage={usersPerPage}
+          handlePageChange={handlePageChange}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+        />
       ) : (
         [loading ? <h2>Loading...</h2> : null]
       )}
       <br />
-      <Button variant="contained" color="primary" onClick={handleGetStats}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => setShowStatsFlag(true)}
+      >
         Show Stats
       </Button>
-      {stats.length ? <CountryFrequency stats={stats} /> : null}
+      {showStatsFlag ? <CountryFrequency stats={stats} /> : null}
     </div>
   );
 }

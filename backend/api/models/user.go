@@ -16,6 +16,26 @@ type User struct {
 	UpdatedAt    time.Time `json:"updated_at" gorm:"default:CURRENT_TIMESTAMP"`
 }
 
+func Paginate(pageNumber int, pageSize int) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		page := pageNumber
+		if page == 0 {
+			page = 1
+		}
+
+		pageSize := pageSize
+		switch {
+		case pageSize > 100:
+			pageSize = 100
+		case pageSize <= 0:
+			pageSize = 10
+		}
+
+		offset := (page - 1) * pageSize
+		return db.Offset(int(offset)).Limit(int(pageSize))
+	}
+}
+
 func (u *User) SaveUser(db *gorm.DB) (*User, error) {
 	err := db.Debug().Create(&u).Error
 	if err != nil {
@@ -33,9 +53,9 @@ func (u *User) GetUsers(db *gorm.DB) (*[]User, error) {
 	return &users, err
 }
 
-func (u *User) GetUsersByCountry(db *gorm.DB, country string) (*[]User, error) {
+func (u *User) GetUsersByCountry(db *gorm.DB, country string, pageNumber int, pageSize int) (*[]User, error) {
 	users := []User{}
-	err := db.Debug().Where("country = ?", country).Find(&users).Error
+	err := db.Debug().Scopes(Paginate(pageNumber, pageSize)).Where("country = ?", country).Find(&users).Error
 	if err != nil {
 		return &[]User{}, err
 	}
