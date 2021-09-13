@@ -17,7 +17,8 @@ Clone the repo and then open a terminal in the location of the cloned repo and r
 ```sh
 docker-compose up -d --build
 ```
-Make sure you are not using ports 8080, 5432 and 3000 as they are used by docker-compose
+Make sure you are not using ports 8080, 5432 and 3000 as they are used by docker-compose.
+
 Wait for it to finish before you can start.
 
 Verify everything is working by navigating to your browser and vist 
