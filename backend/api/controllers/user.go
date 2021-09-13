@@ -9,7 +9,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func (s *Server) getUsers(rw http.ResponseWriter, r *http.Request) {
+func (s *Server) GetUsers(rw http.ResponseWriter, r *http.Request) {
 	user := models.User{}
 	users, err := user.GetUsers(s.DB)
 	if err != nil {
@@ -18,7 +18,7 @@ func (s *Server) getUsers(rw http.ResponseWriter, r *http.Request) {
 	responses.JSON(rw, http.StatusOK, users)
 }
 
-func (s *Server) getUsersByCountry(rw http.ResponseWriter, r *http.Request) {
+func (s *Server) GetUsersByCountry(rw http.ResponseWriter, r *http.Request) {
 	user := models.User{}
 	pageNumber, err := strconv.Atoi(mux.Vars(r)["pageNumber"])
 	if err != nil {
@@ -39,7 +39,7 @@ func (s *Server) getUsersByCountry(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *Server) getDistinctCountries(rw http.ResponseWriter, r *http.Request) {
+func (s *Server) GetDistinctCountries(rw http.ResponseWriter, r *http.Request) {
 	user := models.User{}
 	distinctCountries, err := user.GetDistinctCountries(s.DB)
 	if err != nil {
@@ -48,7 +48,7 @@ func (s *Server) getDistinctCountries(rw http.ResponseWriter, r *http.Request) {
 	responses.JSON(rw, http.StatusOK, distinctCountries)
 }
 
-func (s *Server) GetCountyFrequency(rw http.ResponseWriter, r *http.Request) {
+func (s *Server) GetCountryFrequency(rw http.ResponseWriter, r *http.Request) {
 	user := models.User{}
 	countryFrequency, err := user.GetCountyFrequency(s.DB)
 	if err != nil {

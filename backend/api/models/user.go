@@ -71,13 +71,13 @@ func (u *User) GetDistinctCountries(db *gorm.DB) (*[]string, error) {
 	return &countries, err
 }
 
-type countryFrequency struct {
+type CountryFrequency struct {
 	Country   string `json:"country"`
 	Frequency int64  `json:"frequency"`
 }
 
-func (u *User) GetCountyFrequency(db *gorm.DB) (*[]countryFrequency, error) {
-	result := []countryFrequency{}
+func (u *User) GetCountyFrequency(db *gorm.DB) (*[]CountryFrequency, error) {
+	result := []CountryFrequency{}
 	db.Table("users").Select("country, count(country) as frequency").Group("country").Order("country").Scan(&result)
 	return &result, nil
 }
