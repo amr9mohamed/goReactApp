@@ -5,18 +5,20 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
+	"github.com/amr9mohamed/mainApp/api/middlewares"
 	"github.com/amr9mohamed/mainApp/api/models"
 )
 
 type Server struct {
 	DB     *gorm.DB
-	Router *mux.Router
+	Router *gin.Engine
 }
 
 func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string) {
@@ -34,7 +36,11 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 
 	server.DB.Debug().AutoMigrate(&models.User{})
 
-	server.Router = mux.NewRouter()
+	server.Router = gin.Default()
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:3000"}
+	server.Router.Use(cors.New(config))
+	server.Router.Use(middlewares.JsonMiddleware())
 
 	server.initializeRoutes()
 }

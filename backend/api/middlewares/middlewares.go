@@ -1,11 +1,12 @@
 package middlewares
 
-import "net/http"
+import (
+	"github.com/gin-gonic/gin"
+)
 
-func JsonMiddleware(hf http.HandlerFunc) http.HandlerFunc {
-	return func(rw http.ResponseWriter, r *http.Request) {
-		rw.Header().Set("Content-Type", "application/json")
-		rw.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-		hf(rw, r)
+func JsonMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Content-Type", "application/json")
+		c.Next()
 	}
 }
