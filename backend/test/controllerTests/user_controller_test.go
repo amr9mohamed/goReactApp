@@ -12,76 +12,71 @@ import (
 	"github.com/go-playground/assert/v2"
 )
 
-var server = controllers.Server{}
+var router = controllers.Server{}.Router
 
 func TestGetUsers(t *testing.T) {
+	w := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "/users", nil)
 	if err != nil {
 		t.Errorf("this is the error: %v\n", err)
 	}
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(server.GetUsers)
-	handler.ServeHTTP(rr, req)
-
+	router.ServeHTTP(w, req)
 	var users []models.User
-	err = json.Unmarshal((rr.Body.Bytes()), &users)
+	err = json.Unmarshal((w.Body.Bytes()), &users)
 	if err != nil {
 		log.Fatalf("Cannot convert to json: %v\n", err)
 	}
-	assert.Equal(t, rr.Code, http.StatusOK)
+	assert.Equal(t, w.Code, http.StatusOK)
 	assert.Equal(t, len(users), 1007616)
 }
 
 func TestGetUsersByCountry(t *testing.T) {
-	req, err := http.NewRequest("GET", "/users/{country}/{pageNumber}/{pageSize}/", nil)
+	w := httptest.NewRecorder()
+	req, err := http.NewRequest("GET", "/users/:country/:pageNumber/:pageSize/", nil)
 	if err != nil {
 		t.Errorf("this is the error: %v\n", err)
 	}
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(server.GetUsersByCountry)
-	handler.ServeHTTP(rr, req)
+	router.ServeHTTP(w, req)
 
 	var users []models.User
-	err = json.Unmarshal((rr.Body.Bytes()), &users)
+	err = json.Unmarshal((w.Body.Bytes()), &users)
 	if err != nil {
 		log.Fatalf("Cannot convert to json: %v\n", err)
 	}
-	assert.Equal(t, rr.Code, http.StatusOK)
+	assert.Equal(t, w.Code, http.StatusOK)
 	assert.NotEqual(t, len(users), 0)
 }
 
 func TestGetDistinctCountries(t *testing.T) {
+	w := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "/users/countries", nil)
 	if err != nil {
 		t.Errorf("this is the error: %v\n", err)
 	}
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(server.GetDistinctCountries)
-	handler.ServeHTTP(rr, req)
+	router.ServeHTTP(w, req)
 
 	var users []models.User
-	err = json.Unmarshal((rr.Body.Bytes()), &users)
+	err = json.Unmarshal((w.Body.Bytes()), &users)
 	if err != nil {
 		log.Fatalf("Cannot convert to json: %v\n", err)
 	}
-	assert.Equal(t, rr.Code, http.StatusOK)
+	assert.Equal(t, w.Code, http.StatusOK)
 	assert.Equal(t, len(users), 5)
 }
 
 func TestGetCountryFrequency(t *testing.T) {
+	w := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "/users/frequency", nil)
 	if err != nil {
 		t.Errorf("this is the error: %v\n", err)
 	}
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(server.GetCountryFrequency)
-	handler.ServeHTTP(rr, req)
+	router.ServeHTTP(w, req)
 
 	results := []models.CountryFrequency{}
-	err = json.Unmarshal((rr.Body.Bytes()), &results)
+	err = json.Unmarshal((w.Body.Bytes()), &results)
 	if err != nil {
 		log.Fatalf("Cannot convert to json: %v\n", err)
 	}
-	assert.Equal(t, rr.Code, http.StatusOK)
+	assert.Equal(t, w.Code, http.StatusOK)
 	assert.Equal(t, len(results), 5)
 }
