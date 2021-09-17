@@ -21,7 +21,7 @@ services:
       - POSTGRES_USER=amrmohamed
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=users
-      - DATABASE_HOST=5432
+      - DATABASE_HOST=go-postgres
     ports:
       - 5432:5432
     volumes:
