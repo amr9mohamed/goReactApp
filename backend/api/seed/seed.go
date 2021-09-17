@@ -76,18 +76,22 @@ func seedDB() {
 }
 
 func Load(db *gorm.DB) {
-	err := db.Debug().Migrator().DropTable(&models.User{})
-	if err != nil {
-		log.Fatalf("cannot drop table: %v", err)
-	}
-	err = db.Debug().AutoMigrate(&models.User{})
-	if err != nil {
-		log.Fatalf("cannot migrate table: %v", err)
-	}
+	if err := db.Take(&models.User{}).Error; err != nil {
+		err := db.Debug().Migrator().DropTable(&models.User{})
+		if err != nil {
+			log.Fatalf("cannot drop table: %v", err)
+		}
+		err = db.Debug().AutoMigrate(&models.User{})
+		if err != nil {
+			log.Fatalf("cannot migrate table: %v", err)
+		}
 
-	seedDB()
-	err = db.Model(&models.User{}).CreateInBatches(&users, 1000).Error
-	if err != nil {
-		log.Fatalf("cannot seed users table: %v", err)
+		seedDB()
+		err = db.Model(&models.User{}).CreateInBatches(&users, 1000).Error
+		if err != nil {
+			log.Fatalf("cannot seed users table: %v", err)
+		}
+	} else {
+		fmt.Println("No need to seed the database, table has data")
 	}
 }
