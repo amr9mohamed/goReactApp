@@ -22,10 +22,10 @@ type Server struct {
 	Router *gin.Engine
 }
 
-func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string) {
+func (s *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, DbName string) {
 	var err error
 	DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", DbHost, DbPort, DbUser, DbName, DbPassword)
-	server.DB, err = gorm.Open(postgres.New(postgres.Config{
+	s.DB, err = gorm.Open(postgres.New(postgres.Config{
 		DriverName: Dbdriver,
 		DSN:        DBURL,
 	}))
@@ -35,18 +35,21 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 		fmt.Printf("We are connected to the database")
 	}
 
-	server.DB.Debug().AutoMigrate(&models.User{})
+	err = s.DB.Debug().AutoMigrate(&models.User{})
+	if err != nil {
+		return
+	}
 
-	server.Router = gin.Default()
+	s.Router = gin.Default()
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{os.Getenv("ORIGIN")}
-	server.Router.Use(cors.New(config))
-	server.Router.Use(middlewares.JsonMiddleware())
+	s.Router.Use(cors.New(config))
+	s.Router.Use(middlewares.JsonMiddleware())
 
-	server.initializeRoutes()
+	s.initializeRoutes()
 }
 
-func (server *Server) Run(addr string) {
+func (s *Server) Run(addr string) {
 	fmt.Println("Listening to port 8080")
-	log.Fatal(http.ListenAndServe(addr, server.Router))
+	log.Fatal(http.ListenAndServe(addr, s.Router))
 }
